@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Aviso, Botao, Rotulo, Texto, Titulo } from '../../components/ui';
+import { Aviso, Botao, Campo, Rotulo, Texto, Titulo } from '../../components/ui';
 import { Caixa } from '../../components/CamposPerfil';
 import { Capa, Opcoes } from '../../components/jogos';
 import { useAuth } from '../../lib/auth';
@@ -25,6 +25,7 @@ export default function Registrar() {
   const [status, setStatus] = useState('playing');
   const [plataforma, setPlataforma] = useState(null);
   const [nota, setNota] = useState(null);
+  const [horas, setHoras] = useState('');
   const [review, setReview] = useState('');
   const [spoiler, setSpoiler] = useState(false);
   const [visibilidade, setVisibilidade] = useState('friends');
@@ -41,6 +42,7 @@ export default function Registrar() {
         setStatus(r.status);
         setPlataforma(r.platform);
         setNota(r.rating);
+        setHoras(r.hours_played != null ? String(r.hours_played) : '');
         setReview(r.review || '');
         setSpoiler(r.has_spoilers);
         setVisibilidade(r.visibility);
@@ -57,15 +59,25 @@ export default function Registrar() {
 
   async function salvar() {
     setErro(null);
-    setSalvando(true);
-    const r = await salvarRegistro(userId, gameId, {
+    const campos = {
       status,
       platform: plataforma,
       rating: nota,
       review: review.trim() || null,
       has_spoilers: spoiler,
       visibility: menorDeIdade ? 'friends' : visibilidade,
-    });
+    };
+    // Horas só valem para "Zerei" e "Larguei"; nos outros status, o valor guardado fica como está
+    if (pedeHoras) {
+      const h = horas.trim();
+      if (h && !/^\d{1,4}$/.test(h)) {
+        setErro('Horas jogadas: use só números inteiros, até 9999.');
+        return;
+      }
+      campos.hours_played = h ? Number(h) : null;
+    }
+    setSalvando(true);
+    const r = await salvarRegistro(userId, gameId, campos);
     setSalvando(false);
     if (r.erro) setErro(r.erro);
     else fechar();
@@ -82,6 +94,8 @@ export default function Registrar() {
     if (r.erro) setErro(r.erro);
     else fechar();
   }
+
+  const pedeHoras = status === 'finished' || status === 'dropped';
 
   const textoData =
     status === 'finished' && datas.finished_at
@@ -109,13 +123,26 @@ export default function Registrar() {
         </View>
 
         <Aviso>{erroJogo}</Aviso>
-        {!carregado ? <ActivityIndicator color={cores.primario} /> : null}
+        {!carregado ? <ActivityIndicator color={cores.link} /> : null}
 
         <View style={{ gap: 8 }}>
           <Rotulo>Status</Rotulo>
           <Opcoes rotulo="Status" colunas={4} opcoes={STATUS.map((s) => ({ valor: s.valor, rotulo: s.rotulo, descricao: s.longo }))} valor={status} onChange={setStatus} />
           {textoData ? <Text style={{ fontFamily: fonts.mono, fontSize: 12, color: cores.textoSuave }}>{textoData}</Text> : null}
         </View>
+
+        {pedeHoras ? (
+          <Campo
+            rotulo="Horas jogadas (opcional)"
+            value={horas}
+            onChangeText={(t) => setHoras(t.replace(/\D/g, '').slice(0, 4))}
+            keyboardType="number-pad"
+            inputMode="numeric"
+            placeholder="Ex.: 42"
+            maxLength={4}
+            dica="Aparece no seu perfil e no feed dos amigos."
+          />
+        ) : null}
 
         <View style={{ gap: 8 }}>
           <Rotulo>Plataforma</Rotulo>

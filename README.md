@@ -17,7 +17,7 @@ npx expo start
 
 ### 1. Supabase (projeto novo, separado do site)
 1. Em supabase.com, crie um projeto novo (ex.: `quicksave-app`) na região São Paulo.
-2. **SQL Editor:** cole e rode `supabase/migrations/001_base.sql`.
+2. **SQL Editor:** cole e rode, em ordem, cada arquivo de `supabase/migrations/` (`001_base.sql`, `002_aceite_termos.sql`, `003_jogos.sql`, `004_social.sql`...).
 3. **Authentication > Sign In / Providers > Email:** deixe ligado, com "Confirm email" ativo.
 4. **Authentication > URL Configuration:** em "Site URL", coloque `http://localhost:8081` por enquanto e adicione `http://localhost:8081` também em "Redirect URLs".
 5. **Project Settings > API Keys:** copie a "Publishable key". Em **Project Settings > Data API**, copie a "Project URL".
@@ -75,10 +75,12 @@ No SQL Editor do app: `update public.profiles set role = 'admin' where username 
 ```
 src/app/          telas (Expo Router)
   (auth)/         boas-vindas, entrar, criar-conta, esqueci-senha
-  (tabs)/         inicio, buscar, registrar, amigos, perfil
+  (tabs)/         inicio (feed), buscar, registrar, amigos, perfil
+  jogo/ registro/ páginas do jogo e formulário de registro
+  u/ grupo/ atividade/ notificacoes.js   parte social
   completar-perfil.js
 src/components/   componentes visuais (ui.js, ícones, campos de perfil)
-src/lib/          supabase, login (auth, google), validações
+src/lib/          supabase, login (auth, google), validações, jogos, registros, social
 src/theme/        cores, fontes, bordas e sombras
 supabase/migrations/  SQL numerado, rodado manualmente
 ```

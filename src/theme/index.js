@@ -1,4 +1,10 @@
-import { useColorScheme } from 'react-native';
+import { createContext, createElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Platform, useColorScheme } from 'react-native';
+
+// No Android, o localStorage vem do expo-sqlite (o mesmo usado pela sessão do Supabase)
+if (Platform.OS !== 'web') {
+  require('expo-sqlite/localStorage/install');
+}
 
 // Mesmas cores do site quicksavegames.com.br
 export const palette = {
@@ -21,26 +27,31 @@ const light = {
   divisor: '#e8d3a8',
   primario: palette.roxo,
   textoNoPrimario: palette.creme,
+  link: palette.roxo, // roxo usado como cor de texto (links, @nomes)
   destaque: palette.vermelho,
   textoNoDestaque: palette.creme,
   sucesso: palette.verde,
   erro: palette.vermelho,
+  fundoMenu: 'rgba(2, 0, 0, 0.55)',
 };
 
+// Modo escuro do site (app/globals.css: --bg, --surface, --ink, --ink-soft, --line, --shadow...)
 const dark = {
-  fundo: '#14090f',
-  superficie: '#23141d',
+  fundo: '#170b1e',
+  superficie: '#26122f',
   texto: palette.creme,
-  textoSuave: '#cdb8d6',
+  textoSuave: '#cdb9dc',
   borda: palette.creme,
-  sombra: '#000000',
-  divisor: '#3d2a36',
-  primario: '#b56ccc',
-  textoNoPrimario: palette.tinta,
-  destaque: '#e0402e',
-  textoNoDestaque: palette.tinta,
-  sucesso: '#6fd08f',
-  erro: '#ff7a68',
+  sombra: palette.roxo,
+  divisor: '#43264f',
+  primario: palette.roxo,
+  textoNoPrimario: palette.creme,
+  link: palette.lilas, // o roxo não tem contraste suficiente como texto no fundo escuro
+  destaque: palette.vermelho,
+  textoNoDestaque: palette.creme,
+  sucesso: '#7fd49a',
+  erro: '#ff8a78',
+  fundoMenu: 'rgba(2, 0, 0, 0.7)',
 };
 
 // Nomes registrados em useFonts (src/app/_layout.js)
@@ -63,8 +74,49 @@ export function sombra(cores, tamanho = 4) {
 
 export const ALVO_TOQUE = 44;
 
+// Mesma chave do site; guarda 'light' ou 'dark'. Sem nada salvo, segue o celular.
+const CHAVE = 'quicksave-theme';
+
+function lerPreferencia() {
+  try {
+    const v = globalThis.localStorage?.getItem(CHAVE);
+    return v === 'light' || v === 'dark' ? v : null;
+  } catch {
+    return null;
+  }
+}
+
+const TemaContext = createContext(null);
+
+export function ThemeProvider({ children }) {
+  const sistema = useColorScheme();
+  const [preferencia, setPreferencia] = useState(lerPreferencia);
+  const escuro = (preferencia || sistema) === 'dark';
+
+  const alternarTema = useCallback(() => {
+    const proximo = escuro ? 'light' : 'dark';
+    try {
+      globalThis.localStorage?.setItem(CHAVE, proximo);
+    } catch {
+      // sem armazenamento: vale só até fechar o app
+    }
+    setPreferencia(proximo);
+  }, [escuro]);
+
+  // Na web, o fundo da página acompanha (aparece ao rolar além do fim)
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+      document.body.style.backgroundColor = (escuro ? dark : light).fundo;
+    }
+  }, [escuro]);
+
+  const valor = useMemo(() => ({ escuro, alternarTema }), [escuro, alternarTema]);
+  return createElement(TemaContext.Provider, { value: valor }, children);
+}
+
 export function useTheme() {
-  const esquema = useColorScheme();
-  const cores = esquema === 'dark' ? dark : light;
-  return { cores, fonts, borda, escuro: esquema === 'dark' };
+  const ctx = useContext(TemaContext);
+  const sistema = useColorScheme();
+  const escuro = ctx ? ctx.escuro : sistema === 'dark';
+  return { cores: escuro ? dark : light, fonts, borda, escuro, alternarTema: ctx?.alternarTema };
 }

@@ -7,7 +7,7 @@ import { BricolageGrotesque_700Bold, BricolageGrotesque_800ExtraBold } from '@ex
 import { SourceSerif4_400Regular, SourceSerif4_400Regular_Italic, SourceSerif4_600SemiBold } from '@expo-google-fonts/source-serif-4';
 import { DMMono_400Regular, DMMono_500Medium } from '@expo-google-fonts/dm-mono';
 import { AuthProvider, useAuth } from '../lib/auth';
-import { useTheme } from '../theme';
+import { ThemeProvider, useTheme } from '../theme';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -36,6 +36,11 @@ function Navegacao() {
           <Stack.Screen name="jogo/[id]" />
           <Stack.Screen name="registro/[id]" options={{ presentation: 'modal' }} />
           <Stack.Screen name="editar-perfil" />
+          <Stack.Screen name="u/[username]" />
+          <Stack.Screen name="grupo/novo" />
+          <Stack.Screen name="grupo/[id]" />
+          <Stack.Screen name="atividade/[id]" />
+          <Stack.Screen name="notificacoes" />
         </Stack.Protected>
       </Stack>
     </>
@@ -56,8 +61,10 @@ export default function RootLayout() {
   if (!fontesProntas && !erroFontes) return null;
 
   return (
-    <AuthProvider>
-      <Navegacao />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Navegacao />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

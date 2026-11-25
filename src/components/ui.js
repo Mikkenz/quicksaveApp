@@ -123,7 +123,7 @@ export function LinkTexto({ titulo, onPress, style }) {
       hitSlop={8}
       style={{ minHeight: ALVO_TOQUE, justifyContent: 'center' }}
     >
-      <Text style={[{ fontFamily: fonts.corpoForte, fontSize: 16, color: cores.primario, textDecorationLine: 'underline' }, style]}>
+      <Text style={[{ fontFamily: fonts.corpoForte, fontSize: 16, color: cores.link, textDecorationLine: 'underline' }, style]}>
         {titulo}
       </Text>
     </Pressable>

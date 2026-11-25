@@ -13,7 +13,10 @@ Mockup de referência: canvas "Quicksave App: mockup nativo" (10 telas de celula
 | Login | **Conta própria com e-mail e senha** + **Google**. Apple fica para quando houver conta paga de desenvolvedor (US$ 99 por ano) |
 | Banco | **Projeto Supabase novo**, separado do banco do site |
 | Nota | 1 a 10 |
-| Amizade | Pedido + aceite (mútua) |
+| Amizade | Pedido + aceite (mútua), com bloqueio |
+| Grupos | Privados, até 20 pessoas, só entra quem é convidado por um amigo. Quem entra compartilha com o grupo os registros "Amigos" |
+| Comunidades | Públicas, por tema, em formato de fórum, sem feed de atividades dos membros (fase 4) |
+| Notificações | Dentro do app (sino no Início). Push no celular fica para depois |
 | Visibilidade | Cada registro escolhe Amigos (padrão) ou Todos |
 | Feed | Abas **Amigos** (padrão) e **Popular** (mais jogados em 7 dias + reviews públicas em alta) |
 | Idade | Sem idade mínima. **Menores de 18**: registros só para amigos e perfil fora do Popular e da busca pública. **Menores de 12**: autorização de um responsável por e-mail |
@@ -58,7 +61,11 @@ Quicksave-App/
       (tabs)/             inicio, buscar, registrar, amigos, perfil
       completar-perfil.js
       jogo/[id].js        (fase 2)
-      rewind/[mes].js     (fase 4)
+      u/[username].js     perfil de outra pessoa (fase 3)
+      grupo/              novo.js e [id].js (fase 3)
+      atividade/[id].js   atividade com comentários (fase 3)
+      notificacoes.js     (fase 3)
+      rewind/[mes].js     (fase 5)
       _layout.js          fontes, sessão e redirecionamento logado/deslogado
     components/           Botao, Campo, Chip, Capa, Card...
     theme/                cores, fontes, bordas, sombras (claro e escuro)
@@ -80,10 +87,11 @@ Cada fase é uma branch, com explicação antes e sem commit até você aprovar.
 |---|---|---|
 | **1. Fundação** | Projeto Expo, tema visual, navegação por abas (telas vazias), login com e-mail/senha e Google, completar perfil, SQL base + RLS, versão web rodando, primeiro APK | Você cria conta, entra pelo Google, escolhe o @ e vê as abas no celular (APK) e no navegador |
 | **2. Jogos** | Edge Function do IGDB (fila + cache), busca, página do jogo, registrar, perfil com diário | Você registra 10 jogos e eles aparecem no perfil |
-| **3. Social** | Pedidos de amizade, feed Amigos e Popular, proteções de menores | Dois usuários de teste se veem e o RLS bloqueia o resto |
-| **4. Rewind** | Cálculo em SQL, aba Rewind no admin do site, stories, imagem para compartilhar | Rewind de teste publicado e visto por 2 usuários |
-| **5. Admin e beta** | Aba App no admin do site (estatísticas, usuários, denúncias), página `/app` no site, LGPD (termos, privacidade, excluir conta), backup | Beta fechado com ~20 pessoas |
-| **6. Depois** | Push, curtidas e comentários, listas, Play Store, App Store e login Apple | Conforme o feedback |
+| **3. Social** | Pedidos de amizade, bloqueio, feed Amigos e Popular, perfil de outras pessoas, curtidas em reviews, horas jogadas, grupos privados, reações e comentários, notificações dentro do app, proteções de menores | Dois usuários de teste se veem, interagem num grupo e o RLS bloqueia o resto |
+| **4. Comunidades** | Comunidades públicas por tema (fórum): tópicos com jogos anexados, respostas, curtidas, moderação pelo criador e denúncias | Uma comunidade de teste com tópicos, respostas e uma denúncia registrada |
+| **5. Rewind** | Cálculo em SQL, aba Rewind no admin do site, stories, imagem para compartilhar | Rewind de teste publicado e visto por 2 usuários |
+| **6. Admin e beta** | Aba App no admin do site (estatísticas, usuários, denúncias), página `/app` no site, LGPD (termos, privacidade, excluir conta, e-mail de autorização do responsável), backup | Beta fechado com ~20 pessoas |
+| **7. Depois** | Push no celular, listas, importação da Steam, Play Store, App Store e login Apple | Conforme o feedback |
 
 ## 6. Riscos
 

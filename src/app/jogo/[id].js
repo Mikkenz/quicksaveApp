@@ -8,15 +8,9 @@ import { Capa, Chip, CreditoIGDB, Nota, Opcoes } from '../../components/jogos';
 import { useAuth } from '../../lib/auth';
 import { anoDe } from '../../lib/igdb';
 import { useJogo } from '../../lib/useJogo';
-import {
-  STATUS,
-  alternarFavorito,
-  estatisticasJogo,
-  favoritosDe,
-  meuRegistro,
-  reviewsPublicas,
-  salvarRegistro,
-} from '../../lib/registros';
+import { STATUS, alternarFavorito, estatisticasJogo, favoritosDe, meuRegistro, salvarRegistro } from '../../lib/registros';
+import { reviewsDoJogo } from '../../lib/social';
+import { CartaoReview } from '../../components/social';
 import { ALVO_TOQUE, palette, useTheme } from '../../theme';
 
 function Estatistica({ valor, rotulo, cor }) {
@@ -26,28 +20,6 @@ function Estatistica({ valor, rotulo, cor }) {
       <Text style={{ fontFamily: fonts.display, fontSize: 22, color: cor || cores.texto }}>{valor}</Text>
       <Text style={{ fontFamily: fonts.mono, fontSize: 11, letterSpacing: 1, textTransform: 'uppercase', color: cores.textoSuave }}>{rotulo}</Text>
     </View>
-  );
-}
-
-function Review({ r }) {
-  const { cores, fonts } = useTheme();
-  const [mostrar, setMostrar] = useState(!r.has_spoilers);
-  const p = r.profiles || {};
-  return (
-    <Cartao style={{ gap: 8 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-        <Text style={{ flex: 1, fontFamily: fonts.display, fontSize: 16, color: cores.texto }}>@{p.username}</Text>
-        {r.platform ? <Chip texto={r.platform} /> : null}
-        <Nota valor={r.rating} tamanho={36} />
-      </View>
-      {mostrar ? (
-        <Text style={{ fontFamily: fonts.corpoItalico, fontSize: 16, lineHeight: 23, color: cores.texto }}>“{r.review}”</Text>
-      ) : (
-        <Pressable role="button" onPress={() => setMostrar(true)} style={{ minHeight: ALVO_TOQUE, justifyContent: 'center' }}>
-          <Text style={{ fontFamily: fonts.corpoForte, fontSize: 15, color: cores.primario }}>Contém spoilers. Toque para ler.</Text>
-        </Pressable>
-      )}
-    </Cartao>
   );
 }
 
@@ -70,7 +42,7 @@ export default function PaginaJogo() {
     const [reg, st, rv, favs] = await Promise.all([
       meuRegistro(userId, gameId),
       estatisticasJogo(gameId),
-      reviewsPublicas(gameId),
+      reviewsDoJogo(gameId),
       favoritosDe(userId),
     ]);
     setRegistro(reg);
@@ -132,7 +104,7 @@ export default function PaginaJogo() {
             </View>
           </View>
 
-          {carregando && !jogo ? <ActivityIndicator color={cores.primario} /> : null}
+          {carregando && !jogo ? <ActivityIndicator color={cores.link} /> : null}
           <Aviso>{erro}</Aviso>
 
           {jogo ? (
@@ -187,9 +159,18 @@ export default function PaginaJogo() {
               ) : null}
 
               <View style={{ gap: 10 }}>
-                <Rotulo>Reviews da comunidade</Rotulo>
-                {reviews.length === 0 ? <Texto suave>Ainda não há reviews públicas deste jogo.</Texto> : null}
-                {reviews.map((r) => <Review key={r.user_id} r={r} />)}
+                <Rotulo>Reviews</Rotulo>
+                {reviews.length === 0 ? <Texto suave>Ainda não há reviews deste jogo que você possa ver.</Texto> : null}
+                {reviews.map((r) => (
+                  <CartaoReview
+                    key={r.user_id}
+                    r={r}
+                    jogo={jogo}
+                    aoMudar={(nova, msg) =>
+                      msg ? setAviso(msg) : setReviews((lista) => lista.map((x) => (x.user_id === nova.user_id ? nova : x)))
+                    }
+                  />
+                ))}
               </View>
               <CreditoIGDB />
             </>

@@ -32,7 +32,7 @@ export default function RegistrarAba() {
 
       {buscando ? (
         <>
-          {carregando ? <ActivityIndicator color={cores.primario} /> : null}
+          {carregando ? <ActivityIndicator color={cores.link} /> : null}
           <Aviso>{erro}</Aviso>
           <View>
             {itens.map((j) => <LinhaJogo key={j.igdb_id} jogo={j} />)}
