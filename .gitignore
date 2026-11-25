@@ -42,3 +42,6 @@ yarn-error.*
 
 # supabase CLI (cache local do link)
 supabase/.temp/
+
+# APK baixado do EAS (vai para o GitHub Releases, nunca para o repositório)
+*.apk
