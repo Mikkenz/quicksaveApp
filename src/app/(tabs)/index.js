@@ -12,6 +12,7 @@ import { feedAmigos, jogosPopulares, reviewsEmAlta } from '../../lib/social';
 import { useFeed } from '../../lib/useFeed';
 import { meusRewinds } from '../../lib/rewind';
 import { CartaoRewindLista } from '../../components/rewind/CartaoLista';
+import { AvisoSuspensa } from '../../components/AvisoConta';
 import { ALVO_TOQUE, useTheme } from '../../theme';
 
 const ABAS = [
@@ -167,6 +168,7 @@ export default function Inicio() {
       >
         <Opcoes rotulo="O que mostrar" opcoes={ABAS} valor={aba} onChange={setAba} colunas={2} />
       </CabecalhoAba>
+      <AvisoSuspensa />
       {rewind ? <CartaoRewindLista r={rewind} destaque /> : null}
       {aba === 'amigos' ? <FeedAmigos /> : <Popular />}
     </Tela>

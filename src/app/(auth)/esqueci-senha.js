@@ -4,6 +4,7 @@ import { Aviso, Botao, Campo, Tela, Texto } from '../../components/ui';
 import { Cabecalho } from '../../components/Cabecalho';
 import { supabase } from '../../lib/supabase';
 import { erroEmail } from '../../lib/validacao';
+import { linkRedefinirSenha } from '../../lib/conta';
 
 export default function EsqueciSenha() {
   const [email, setEmail] = useState('');
@@ -19,7 +20,7 @@ export default function EsqueciSenha() {
       return;
     }
     setCarregando(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim());
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: linkRedefinirSenha() });
     setCarregando(false);
     if (error) setErro('Não foi possível enviar agora. Tente de novo em alguns minutos.');
     else setEnviado(true);

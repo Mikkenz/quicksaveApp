@@ -7,6 +7,7 @@ import { CampoBusca } from '../../components/busca';
 import { IconeGrupo } from '../../components/icons';
 import { BotaoPequeno, BotaoRelacao, LinhaPessoa } from '../../components/social';
 import { useAuth } from '../../lib/auth';
+import { AvisoResponsavel } from '../../components/AvisoConta';
 import { atualizarContagens } from '../../lib/contagens';
 import {
   buscarPessoas,
@@ -134,9 +135,7 @@ export default function Amigos() {
     return (
       <Tela>
         <CabecalhoAba titulo="Amigos" />
-        <Aviso tipo="info">
-          Para adicionar amigos e entrar em grupos, seu responsável precisa autorizar. Enquanto isso, você pode usar o seu diário normalmente.
-        </Aviso>
+        <AvisoResponsavel texto="Para adicionar amigos e entrar em grupos, seu responsável precisa autorizar. Enquanto isso, você pode usar o seu diário normalmente." />
       </Tela>
     );
   }

@@ -8,7 +8,7 @@ const AuthContext = createContext(null);
 
 async function buscarPerfil(userId) {
   const [{ data: perfil }, { data: privado }] = await Promise.all([
-    supabase.from('profiles').select('id, username, display_name, avatar_url, bio, role').eq('id', userId).maybeSingle(),
+    supabase.from('profiles').select('id, username, display_name, avatar_url, bio, role, suspended_at, suspended_reason').eq('id', userId).maybeSingle(),
     supabase.from('profile_private').select('birth_date, guardian_email, guardian_consent_at, terms_version, terms_accepted_at').eq('id', userId).maybeSingle(),
   ]);
   return { perfil, privado };
@@ -73,6 +73,7 @@ export function AuthProvider({ children }) {
       menorDeIdade: anos !== null && anos < 18,
       // Menor de 12 sem autorização do responsável: ainda sem amizades, grupos e interações
       precisaAutorizacao: precisaResponsavel && !privado?.guardian_consent_at,
+      suspensa: Boolean(perfil?.suspended_at),
       recarregarPerfil: () => carregarPerfil(sessao),
       sair: async () => {
         await sairDoGoogle();

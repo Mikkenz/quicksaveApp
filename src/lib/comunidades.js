@@ -22,6 +22,7 @@ const MENSAGENS = {
   alvo_nao_encontrado: 'Esse conteúdo não existe mais.',
   acao_invalida: 'Ação inválida.',
   sem_acesso: 'Você não tem acesso a isso.',
+  conta_suspensa: 'Sua conta está suspensa: não é possível fazer isso agora.',
 };
 
 function traduzir(error, padrao = 'Não foi possível fazer isso agora. Tente de novo.') {

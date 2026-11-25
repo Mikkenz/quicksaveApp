@@ -7,6 +7,7 @@ import { CampoBusca } from '../../components/busca';
 import { BotaoPequeno } from '../../components/social';
 import { CartaoTopico, LinhaComunidade } from '../../components/comunidades';
 import { useAuth } from '../../lib/auth';
+import { AvisoResponsavel } from '../../components/AvisoConta';
 import { buscarComunidades, buscarTopicos, comunidadesEmAlta, minhasComunidades } from '../../lib/comunidades';
 import { useTheme } from '../../theme';
 
@@ -76,7 +77,7 @@ export default function Comunidades() {
     return (
       <Tela>
         <CabecalhoAba titulo="Comunidades" />
-        <Aviso tipo="info">Para ver as comunidades, seu responsável precisa autorizar. Enquanto isso, você pode usar o seu diário normalmente.</Aviso>
+        <AvisoResponsavel texto="Para ver as comunidades, seu responsável precisa autorizar. Enquanto isso, você pode usar o seu diário normalmente." />
       </Tela>
     );
   }
