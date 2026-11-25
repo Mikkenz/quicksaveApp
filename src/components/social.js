@@ -17,6 +17,9 @@ import {
   verboAtividade,
 } from '../lib/social';
 import { atualizarContagens } from '../lib/contagens';
+import { useAuth } from '../lib/auth';
+import { Denunciar } from './Denunciar';
+import { ConteudoSpoiler } from './Spoiler';
 import { ALVO_TOQUE, palette, sombra, useTheme } from '../theme';
 
 /** Foto redonda; sem foto, a inicial sobre lilás. */
@@ -151,21 +154,15 @@ export function LinhaPessoa({ pessoa, subtitulo, children, aoTocar }) {
   );
 }
 
-function TextoReview({ texto, spoiler, linhas }) {
+function TextoReview({ texto, spoiler, linhas, aberto }) {
   const { cores, fonts } = useTheme();
-  const [mostrar, setMostrar] = useState(!spoiler);
   if (!texto) return null;
-  if (!mostrar) {
-    return (
-      <Pressable role="button" onPress={() => setMostrar(true)} style={{ minHeight: ALVO_TOQUE, justifyContent: 'center' }}>
-        <Text style={{ fontFamily: fonts.corpoForte, fontSize: 15, color: cores.link }}>Contém spoilers. Toque para ler.</Text>
-      </Pressable>
-    );
-  }
   return (
-    <Text style={{ fontFamily: fonts.corpoItalico, fontSize: 16, lineHeight: 23, color: cores.texto }} numberOfLines={linhas}>
-      “{texto}”
-    </Text>
+    <ConteudoSpoiler spoiler={spoiler} aberto={aberto}>
+      <Text style={{ fontFamily: fonts.corpoItalico, fontSize: 16, lineHeight: 23, color: cores.texto }} numberOfLines={linhas}>
+        “{texto}”
+      </Text>
+    </ConteudoSpoiler>
   );
 }
 
@@ -244,6 +241,7 @@ function BarraReacoes({ item, aoMudar, comComentarios = true }) {
 /** Cartão de uma atividade do feed: "@ana zerou Hades em 38 h". */
 export function CartaoAtividade({ item, aoMudar, comComentarios = true, reviewCompleta }) {
   const { cores, fonts } = useTheme();
+  const meuId = useAuth().sessao?.user?.id;
   const horas = textoHoras(item.hours_played, item.type);
   const meta = [horas, item.platform, tempoRelativo(item.created_at)].filter(Boolean).join(' · ');
   return (
@@ -266,7 +264,7 @@ export function CartaoAtividade({ item, aoMudar, comComentarios = true, reviewCo
         </View>
         <Nota valor={item.rating} tamanho={38} />
       </View>
-      <TextoReview texto={item.review} spoiler={item.has_spoilers} linhas={reviewCompleta ? undefined : 5} />
+      <TextoReview texto={item.review} spoiler={item.has_spoilers} aberto={item.user_id === meuId} linhas={reviewCompleta ? undefined : 5} />
       <BarraReacoes item={item} aoMudar={aoMudar} comComentarios={comComentarios} />
     </Cartao>
   );
@@ -275,6 +273,7 @@ export function CartaoAtividade({ item, aoMudar, comComentarios = true, reviewCo
 /** Review com curtida (página do jogo e Popular). Com "jogo", mostra a capa e o nome. */
 export function CartaoReview({ r, jogo, aoMudar }) {
   const { cores, fonts } = useTheme();
+  const meuId = useAuth().sessao?.user?.id;
   const [enviando, setEnviando] = useState(false);
   const horas = textoHoras(r.hours_played, 'finished');
 
@@ -314,7 +313,7 @@ export function CartaoReview({ r, jogo, aoMudar }) {
         {r.platform ? <Chip texto={r.platform} /> : null}
         <Nota valor={r.rating} tamanho={36} />
       </View>
-      <TextoReview texto={r.review} spoiler={r.has_spoilers} linhas={r.game_name ? 6 : undefined} />
+      <TextoReview texto={r.review} spoiler={r.has_spoilers} aberto={r.user_id === meuId} linhas={r.game_name ? 6 : undefined} />
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
         <Pressable
           role="button"
@@ -327,6 +326,9 @@ export function CartaoReview({ r, jogo, aoMudar }) {
           <Text style={{ fontFamily: fonts.monoMedia, fontSize: 12, color: r.liked ? cores.textoNoDestaque : cores.texto }}>{r.likes || 0}</Text>
         </Pressable>
         {horas ? <Text style={{ fontFamily: fonts.mono, fontSize: 12, color: cores.textoSuave }}>Zerou {horas}</Text> : null}
+        {r.user_id !== meuId ? (
+          <Denunciar tipo="review" alvo={`${r.user_id}:${r.game_id ?? jogo?.igdb_id}`} descricao={`a review de @${r.username}`} compacto />
+        ) : null}
         <Text style={{ flex: 1, textAlign: 'right', fontFamily: fonts.mono, fontSize: 12, color: cores.textoSuave }}>{tempoRelativo(r.updated_at)}</Text>
       </View>
     </Cartao>

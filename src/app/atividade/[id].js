@@ -4,12 +4,15 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Aviso, Rotulo, Tela, Texto } from '../../components/ui';
 import { Cabecalho } from '../../components/Cabecalho';
 import { Avatar, BotaoPequeno, CartaoAtividade } from '../../components/social';
+import { Denunciar } from '../../components/Denunciar';
+import { ConteudoSpoiler, MarcarSpoiler } from '../../components/Spoiler';
 import { useAuth } from '../../lib/auth';
 import { apagarComentario, atividade, comentar, comentarios, tempoRelativo } from '../../lib/social';
 import { ALVO_TOQUE, useTheme } from '../../theme';
 
 function Comentario({ c, aoApagar }) {
   const { cores, fonts } = useTheme();
+  const meuId = useAuth().sessao?.user?.id;
   const [confirmar, setConfirmar] = useState(false);
   return (
     <View style={{ flexDirection: 'row', gap: 10, paddingVertical: 10, borderBottomWidth: 2, borderColor: cores.divisor }}>
@@ -20,7 +23,9 @@ function Comentario({ c, aoApagar }) {
         <Text style={{ fontFamily: fonts.mono, fontSize: 12, color: cores.textoSuave }}>
           <Text style={{ fontFamily: fonts.display, fontSize: 14, color: cores.texto }}>@{c.username}</Text> · {tempoRelativo(c.created_at)}
         </Text>
-        <Text style={{ fontFamily: fonts.corpo, fontSize: 16, lineHeight: 22, color: cores.texto }}>{c.body}</Text>
+        <ConteudoSpoiler spoiler={c.has_spoilers} aberto={c.user_id === meuId}>
+          <Text style={{ fontFamily: fonts.corpo, fontSize: 16, lineHeight: 22, color: cores.texto }}>{c.body}</Text>
+        </ConteudoSpoiler>
       </View>
       {c.can_delete ? (
         <Pressable
@@ -34,6 +39,7 @@ function Comentario({ c, aoApagar }) {
           </Text>
         </Pressable>
       ) : null}
+      {c.user_id !== meuId ? <Denunciar tipo="comment" alvo={c.id} descricao={`o comentário de @${c.username}`} compacto /> : null}
     </View>
   );
 }
@@ -46,6 +52,7 @@ export default function Atividade() {
   const [item, setItem] = useState(undefined);
   const [lista, setLista] = useState([]);
   const [texto, setTexto] = useState('');
+  const [spoiler, setSpoiler] = useState(false);
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState(null);
 
@@ -67,10 +74,11 @@ export default function Atividade() {
     if (!corpo || enviando) return;
     setErro(null);
     setEnviando(true);
-    const r = await comentar(eventId, corpo);
+    const r = await comentar(eventId, corpo, spoiler);
     setEnviando(false);
     if (r.erro) return setErro(r.erro);
     setTexto('');
+    setSpoiler(false);
     carregar();
   }
 
@@ -133,6 +141,7 @@ export default function Atividade() {
               color: cores.texto,
             }}
           />
+          <MarcarSpoiler valor={spoiler} onChange={setSpoiler} />
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <Text style={{ fontFamily: fonts.mono, fontSize: 12, color: cores.textoSuave }}>{texto.length}/500</Text>
             <BotaoPequeno titulo={enviando ? 'Enviando...' : 'Comentar'} variante="primario" onPress={enviar} desabilitado={!texto.trim() || enviando} />
