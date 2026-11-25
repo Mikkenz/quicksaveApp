@@ -1,0 +1,67 @@
+# Banco do app: cutuca o Supabase todo dia (o plano gratuito pausa após 7 dias sem uso)
+# e faz um backup criptografado toda semana, guardado por 90 dias nos "Artifacts" desta ação.
+# O repositório é público: por isso o backup sai criptografado com a senha BACKUP_SENHA.
+#
+# Segredos (GitHub > repositório > Settings > Secrets and variables > Actions):
+#   SUPABASE_URL              Project URL do app (https://xxxx.supabase.co)
+#   SUPABASE_PUBLISHABLE_KEY  a mesma chave pública do .env.local
+#   SUPABASE_DB_URL           Connect > Session pooler (URI com a senha do banco)
+#   BACKUP_SENHA              uma senha longa só sua (sem ela não dá para abrir o backup)
+
+name: Banco (manter acordado e backup)
+
+on:
+  schedule:
+    - cron: '0 9 * * *' # todo dia, 6h de Brasília
+    - cron: '30 9 * * 0' # domingo, 6h30 de Brasília: backup
+  workflow_dispatch:
+    inputs:
+      backup:
+        description: 'Fazer backup agora?'
+        type: boolean
+        default: true
+
+jobs:
+  acordar:
+    if: github.event.schedule == '0 9 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cutucar o Supabase
+        env:
+          URL: ${{ secrets.SUPABASE_URL }}
+          CHAVE: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          curl -sS -o /dev/null -w "Supabase respondeu %{http_code}\n" \
+            "$URL/rest/v1/rewind_periods?select=id&limit=1" -H "apikey: $CHAVE"
+
+  backup:
+    if: github.event.schedule == '30 9 * * 0' || (github.event_name == 'workflow_dispatch' && inputs.backup)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Copiar o banco
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          supabase db dump --db-url "$DB_URL" -f esquema.sql
+          supabase db dump --db-url "$DB_URL" --data-only --use-copy --schema public,auth -f dados.sql
+          supabase db dump --db-url "$DB_URL" --role-only -f papeis.sql
+          tar czf backup.tar.gz esquema.sql dados.sql papeis.sql
+
+      - name: Criptografar
+        env:
+          SENHA: ${{ secrets.BACKUP_SENHA }}
+        run: |
+          test -n "$SENHA" || (echo "Falta o segredo BACKUP_SENHA" && exit 1)
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$SENHA" \
+            --symmetric --cipher-algo AES256 -o "quicksave-app-$(date +%F).tar.gz.gpg" backup.tar.gz
+          rm -f esquema.sql dados.sql papeis.sql backup.tar.gz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backup-${{ github.run_id }}
+          path: quicksave-app-*.tar.gz.gpg
+          retention-days: 90

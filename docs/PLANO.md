@@ -90,7 +90,7 @@ Cada fase é uma branch, com explicação antes e sem commit até você aprovar.
 | **3. Social** | Pedidos de amizade, bloqueio, feed Amigos e Popular, perfil de outras pessoas, curtidas em reviews, horas jogadas, grupos privados, reações e comentários, notificações dentro do app, proteções de menores | Dois usuários de teste se veem, interagem num grupo e o RLS bloqueia o resto |
 | **4. Comunidades** | Comunidades públicas por tema (fórum): tópicos com jogos anexados, respostas, curtidas, moderação pelo criador e denúncias | Uma comunidade de teste com tópicos, respostas e uma denúncia registrada |
 | **5. Rewind** | Cálculo em SQL (anual publicado pelo admin, mensal automático pelo pg_cron), stories, imagem para compartilhar, tela Admin › Rewind dentro do app | Rewind de teste publicado e visto por 2 usuários |
-| **6. Admin e beta** | Aba App no admin do site (estatísticas, usuários, denúncias), página `/app` no site, LGPD (termos, privacidade, excluir conta, e-mail de autorização do responsável), backup | Beta fechado com ~20 pessoas |
+| **6. Admin e beta** (passo a passo em [BETA.md](BETA.md)) | Aba App no admin do site (estatísticas, usuários, denúncias), página `/app` no site, LGPD (termos, privacidade, excluir conta, e-mail de autorização do responsável), backup | Beta fechado com ~20 pessoas |
 | **7. Depois** | Push no celular, listas, importação da Steam, Play Store, App Store e login Apple | Conforme o feedback |
 
 ## 6. Riscos

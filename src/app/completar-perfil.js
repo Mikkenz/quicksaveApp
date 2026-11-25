@@ -4,6 +4,7 @@ import { Aviso, Botao, LinkTexto, Tela, Texto, Titulo } from '../components/ui';
 import { Caixa, CampoUsuario, CamposIdade, useUsuarioDisponivel } from '../components/CamposPerfil';
 import { LinksTermos } from '../components/LinksTermos';
 import { useAuth } from '../lib/auth';
+import { pedirAutorizacao } from '../lib/conta';
 import { supabase } from '../lib/supabase';
 import { VERSAO_TERMOS } from '../lib/termos';
 import { IDADE_RESPONSAVEL, erroEmail, idade, lerData } from '../lib/validacao';
@@ -68,6 +69,8 @@ export default function CompletarPerfil() {
       setErroGeral(chave ? MENSAGENS[chave] : 'Não foi possível salvar agora. Tente de novo.');
       return;
     }
+    // Menor de 12: manda o e-mail de autorização ao responsável (se falhar, dá para reenviar depois)
+    if (precisaResponsavel) await pedirAutorizacao();
     await recarregarPerfil();
     // Perfil completo: o _layout troca para as abas
   }

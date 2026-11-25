@@ -16,6 +16,7 @@ const MENSAGENS = {
   limite_comentarios: 'Calma! Espere um pouco antes de comentar de novo.',
   propria_review: 'Você não pode curtir a sua própria review.',
   sem_acesso: 'Você não tem acesso a isso.',
+  conta_suspensa: 'Sua conta está suspensa: não é possível fazer isso agora.',
 };
 
 function traduzir(error, padrao = 'Não foi possível fazer isso agora. Tente de novo.') {

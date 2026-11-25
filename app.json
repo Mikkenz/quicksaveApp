@@ -7,6 +7,12 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/7f2390a0-2064-4dd7-8988-96593d2ba78a"
+    },
     "android": {
       "package": "br.com.quicksavegames.app",
       "adaptiveIcon": {
@@ -28,7 +34,7 @@
         {
           "backgroundColor": "#8d3da4",
           "image": "./assets/splash-icon.png",
-          "imageWidth": 160
+          "imageWidth": 200
         }
       ],
       "expo-sqlite",

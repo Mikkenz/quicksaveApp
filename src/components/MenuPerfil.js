@@ -87,6 +87,7 @@ export function MenuPerfil({ aberto, aoFechar }) {
 
             <Item titulo="Editar perfil" onPress={() => ir('/editar-perfil')} />
             <Item titulo="Rewinds" onPress={() => ir('/rewinds')} />
+            <Item titulo="Minha conta" onPress={() => ir('/conta')} />
             {perfil?.role === 'admin' ? <Item titulo="Admin · Rewind" onPress={() => ir('/admin/rewind')} /> : null}
             {denuncias?.can_review ? (
               <Item titulo={denuncias.open ? `Denúncias (${denuncias.open})` : 'Denúncias'} onPress={() => ir('/denuncias')} />
