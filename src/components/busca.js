@@ -8,7 +8,7 @@ import { ALVO_TOQUE, sombra, useTheme } from '../theme';
 
 export function LinhaJogo({ jogo, aoRegistrar }) {
   const { cores, fonts, borda } = useTheme();
-  const meta = [anoDe(jogo.first_release), jogo.developer].filter(Boolean).join(' Â· ');
+  const meta = [anoDe(jogo.first_release), jogo.developer].filter(Boolean).join(' · ');
   const abrir = () => router.push(`/jogo/${jogo.igdb_id}`);
   return (
     <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center', paddingVertical: 10, borderBottomWidth: 2, borderColor: cores.divisor }}>

@@ -17,7 +17,7 @@ export default function Buscar() {
       <CabecalhoAba titulo="Buscar">
         <CampoBusca valor={texto} onChange={setTexto} />
       </CabecalhoAba>
-      {carregando ? <ActivityIndicator color={cores.primario} style={{ marginTop: 12 }} accessibilityLabel="Buscando" /> : null}
+      {carregando ? <ActivityIndicator color={cores.link} style={{ marginTop: 12 }} accessibilityLabel="Buscando" /> : null}
       <Aviso>{erro}</Aviso>
       {!carregando && !erro && q.length >= 2 && itens.length === 0 ? (
         <Texto suave>Nenhum jogo encontrado para “{q}”. Tente o nome em inglês.</Texto>

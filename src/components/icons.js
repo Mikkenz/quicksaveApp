@@ -27,3 +27,21 @@ export const IconePerfil = (p) => (
 export const IconeVoltar = (p) => (
   <Base {...p}><Path d="M15 5l-7 7 7 7" /></Base>
 );
+export const IconeSino = (p) => (
+  <Base {...p}><Path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5a2.2 2.2 0 0 0 4 0" /></Base>
+);
+export const IconeCoracao = (p) => (
+  <Base {...p}><Path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.4 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z" /></Base>
+);
+export const IconeMarcador = (p) => (
+  <Base {...p}><Path d="M7 3.5h10v17l-5-3.6-5 3.6z" /></Base>
+);
+export const IconeTrofeu = (p) => (
+  <Base {...p}><Path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4.5a3 3 0 0 0 3.5 4M16 6h3.5a3 3 0 0 1-3.5 4M12 13v4M8.5 20.5h7M9.5 17h5" /></Base>
+);
+export const IconeComentario = (p) => (
+  <Base {...p}><Path d="M4 5h16v11H9l-5 4z" /></Base>
+);
+export const IconeGrupo = (p) => (
+  <Base {...p}><Circle cx="12" cy="7.5" r="3" /><Circle cx="5.5" cy="10" r="2.2" /><Circle cx="18.5" cy="10" r="2.2" /><Path d="M7 20c0-3 2.2-5 5-5s5 2 5 5M2 18.5c0-2 1.4-3.4 3.5-3.4M22 18.5c0-2-1.4-3.4-3.5-3.4" /></Base>
+);

@@ -58,19 +58,6 @@ export async function meusRegistros(userId, { status, comReview, limite = 50 } =
   return data || [];
 }
 
-export async function reviewsPublicas(gameId, limite = 20) {
-  const { data, error } = await supabase
-    .from('logs')
-    .select('user_id, rating, review, has_spoilers, platform, updated_at, profiles(username, display_name, avatar_url)')
-    .eq('game_id', gameId)
-    .eq('visibility', 'public')
-    .not('review', 'is', null)
-    .order('updated_at', { ascending: false })
-    .limit(limite);
-  if (error) console.warn('reviewsPublicas:', error.message);
-  return data || [];
-}
-
 export async function estatisticasJogo(gameId) {
   const { data } = await supabase.rpc('game_stats', { p_game: gameId });
   return Array.isArray(data) ? data[0] : data;
