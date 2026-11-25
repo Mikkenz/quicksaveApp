@@ -67,7 +67,14 @@ npx.cmd supabase functions deploy igdb
 ```
    O `<codigo-do-projeto>` é o trecho antes de `.supabase.co` na Project URL. O deploy pede confirmação: responda `y`.
 
-### 5. Tornar alguém admin
+### 5. Rewind mensal automático (pg_cron)
+1. Supabase do app > **Database > Extensions**: procure **pg_cron** e ligue.
+2. Rode (de novo) `supabase/migrations/009_rewind.sql`. Ele agenda o Rewind mensal para o dia 1, às 6h de Brasília.
+3. Para conferir: no SQL Editor, `select jobname, schedule from cron.job;` deve mostrar `rewind-mensal`.
+
+O Rewind anual é criado, gerado e publicado pelo admin no app (menu do perfil > Admin · Rewind).
+
+### 6. Tornar alguém admin
 No SQL Editor do app: `update public.profiles set role = 'admin' where username = 'seu_usuario';`
 
 ## Estrutura
@@ -80,6 +87,7 @@ src/app/          telas (Expo Router)
   jogo/ registro/ páginas do jogo e formulário de registro
   u/ grupo/ atividade/ notificacoes.js   parte social
   comunidade/ topico/ denuncias.js       comunidades e moderação
+  rewind/ rewinds.js admin/              Rewind (stories) e controle do admin
   completar-perfil.js
 src/components/   componentes visuais (ui.js, ícones, campos de perfil)
 src/lib/          supabase, login (auth, google), validações, jogos, registros, social

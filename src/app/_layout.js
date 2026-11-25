@@ -48,6 +48,9 @@ function Navegacao() {
           <Stack.Screen name="topico/novo" />
           <Stack.Screen name="topico/[id]" />
           <Stack.Screen name="denuncias" />
+          <Stack.Screen name="rewinds" />
+          <Stack.Screen name="rewind/[periodo]" options={{ presentation: 'fullScreenModal', animation: 'fade' }} />
+          <Stack.Screen name="admin/rewind" />
         </Stack.Protected>
       </Stack>
     </>

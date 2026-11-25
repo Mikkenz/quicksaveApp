@@ -10,6 +10,8 @@ import { useAuth } from '../../lib/auth';
 import { atualizarContagens, useContagens } from '../../lib/contagens';
 import { feedAmigos, jogosPopulares, reviewsEmAlta } from '../../lib/social';
 import { useFeed } from '../../lib/useFeed';
+import { meusRewinds } from '../../lib/rewind';
+import { CartaoRewindLista } from '../../components/rewind/CartaoLista';
 import { ALVO_TOQUE, useTheme } from '../../theme';
 
 const ABAS = [
@@ -138,10 +140,17 @@ function Popular() {
 
 export default function Inicio() {
   const [aba, setAba] = useState('amigos');
+  const [rewind, setRewind] = useState(null);
 
   useFocusEffect(
     useCallback(() => {
       atualizarContagens();
+      // Destaque do Rewind: o mais recente publicado, se ainda não foi visto ou saiu há menos de 30 dias
+      meusRewinds().then((lista) => {
+        const r = lista.find((x) => x.status === 'published');
+        const recente = r?.published_at && Date.now() - new Date(r.published_at).getTime() < 30 * 86400000;
+        setRewind(r && (!r.seen || recente) ? r : null);
+      });
     }, [])
   );
 
@@ -158,6 +167,7 @@ export default function Inicio() {
       >
         <Opcoes rotulo="O que mostrar" opcoes={ABAS} valor={aba} onChange={setAba} colunas={2} />
       </CabecalhoAba>
+      {rewind ? <CartaoRewindLista r={rewind} destaque /> : null}
       {aba === 'amigos' ? <FeedAmigos /> : <Popular />}
     </Tela>
   );
