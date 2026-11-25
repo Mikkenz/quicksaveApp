@@ -6,7 +6,10 @@ export async function entrarComGoogle() {
     provider: 'google',
     options: { redirectTo: window.location.origin },
   });
-  if (error) return { erro: error.message };
+  if (error) {
+    console.warn('Login Google (web) falhou:', error.message);
+    return { erro: 'Não foi possível entrar com o Google agora. Tente de novo ou use e-mail e senha.' };
+  }
   return {};
 }
 

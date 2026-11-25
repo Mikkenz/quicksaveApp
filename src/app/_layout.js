@@ -33,6 +33,9 @@ function Navegacao() {
         </Stack.Protected>
         <Stack.Protected guard={logado && perfilCompleto}>
           <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="jogo/[id]" />
+          <Stack.Screen name="registro/[id]" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="editar-perfil" />
         </Stack.Protected>
       </Stack>
     </>

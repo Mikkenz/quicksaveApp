@@ -48,7 +48,26 @@ npx eas-cli@latest build --profile development --platform android
 - `preview`: APK "de verdade", para distribuir aos testadores.
 - As variáveis `EXPO_PUBLIC_*` também precisam existir no EAS para os builds na nuvem: em expo.dev > projeto > Environment variables.
 
-### 4. Tornar alguém admin
+### 4. IGDB (busca de jogos) e a função `igdb`
+1. Em dev.twitch.tv/console (conta com 2FA), registre uma aplicação nova, "Quicksave App":
+   - OAuth Redirect URL: `http://localhost`
+   - Categoria: Application Integration
+   - Tipo de cliente: Confidencial
+   Copie o **Client ID** e gere um **Client Secret**.
+2. Supabase do app > **Edge Functions > Secrets**: crie `TWITCH_CLIENT_ID` e `TWITCH_CLIENT_SECRET` com esses valores.
+3. Publique a função (na pasta do app):
+```powershell
+npx.cmd supabase login
+```
+```powershell
+npx.cmd supabase link --project-ref <codigo-do-projeto>
+```
+```powershell
+npx.cmd supabase functions deploy igdb
+```
+   O `<codigo-do-projeto>` é o trecho antes de `.supabase.co` na Project URL. O deploy pede confirmação: responda `y`.
+
+### 5. Tornar alguém admin
 No SQL Editor do app: `update public.profiles set role = 'admin' where username = 'seu_usuario';`
 
 ## Estrutura
