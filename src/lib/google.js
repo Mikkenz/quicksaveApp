@@ -18,7 +18,10 @@ export async function entrarComGoogle() {
     const idToken = resposta.data?.idToken;
     if (!idToken) return { erro: 'O Google não devolveu o token de acesso. Tente de novo.' };
     const { error } = await supabase.auth.signInWithIdToken({ provider: 'google', token: idToken });
-    if (error) return { erro: error.message };
+    if (error) {
+      console.warn('Login Google recusado pelo Supabase:', error.message);
+      return { erro: 'Não foi possível entrar com o Google agora. Tente de novo ou use e-mail e senha.' };
+    }
     return {};
   } catch (e) {
     if (e?.code === statusCodes.IN_PROGRESS) return { cancelado: true };
