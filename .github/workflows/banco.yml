@@ -38,17 +38,18 @@ jobs:
     if: github.event.schedule == '30 9 * * 0' || (github.event_name == 'workflow_dispatch' && inputs.backup)
     runs-on: ubuntu-latest
     steps:
-      - uses: supabase/setup-cli@v1
+      # A CLI do Supabase vem pelo npm (o "setup-cli" consulta a API do GitHub e esbarra no limite de consultas)
+      - uses: actions/setup-node@v4
         with:
-          version: latest
+          node-version: 22
 
       - name: Copiar o banco
         env:
           DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
-          supabase db dump --db-url "$DB_URL" -f esquema.sql
-          supabase db dump --db-url "$DB_URL" --data-only --use-copy --schema public,auth -f dados.sql
-          supabase db dump --db-url "$DB_URL" --role-only -f papeis.sql
+          npx --yes supabase@2 db dump --db-url "$DB_URL" -f esquema.sql
+          npx --yes supabase@2 db dump --db-url "$DB_URL" --data-only --use-copy --schema public,auth -f dados.sql
+          npx --yes supabase@2 db dump --db-url "$DB_URL" --role-only -f papeis.sql
           tar czf backup.tar.gz esquema.sql dados.sql papeis.sql
 
       - name: Criptografar
