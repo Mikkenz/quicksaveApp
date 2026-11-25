@@ -2,11 +2,15 @@ import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { router } from 'expo-router';
 import { Aviso, Botao, Campo, LinkTexto, Tela, Texto, Titulo } from '../components/ui';
+import { useAuth } from '../lib/auth';
 import { supabase } from '../lib/supabase';
 import { erroSenha } from '../lib/validacao';
 
 // Aberta pelo link do e-mail de "Esqueci a senha". O link já cria a sessão; aqui a pessoa escolhe a senha nova.
 export default function RedefinirSenha() {
+  const { logado, perfilCompleto } = useAuth();
+  // Sem perfil completo, "/" (as abas) está bloqueado: vai direto para completar o perfil
+  const sair = () => router.replace(logado && !perfilCompleto ? '/completar-perfil' : '/');
   const [temSessao, setTemSessao] = useState(null);
   const [senha, setSenha] = useState('');
   const [repetir, setRepetir] = useState('');
@@ -61,7 +65,7 @@ export default function RedefinirSenha() {
       ) : pronto ? (
         <>
           <Aviso tipo="sucesso">Senha alterada. Você já está dentro do app.</Aviso>
-          <Botao titulo="Continuar" variante="destaque" onPress={() => router.replace('/')} />
+          <Botao titulo="Continuar" variante="destaque" onPress={sair} />
         </>
       ) : (
         <>
@@ -71,7 +75,7 @@ export default function RedefinirSenha() {
           <Aviso>{erro}</Aviso>
           <View style={{ flex: 1 }} />
           <Botao titulo="Salvar senha" variante="destaque" onPress={salvar} carregando={salvando} desabilitado={!temSessao} />
-          <LinkTexto titulo="Voltar ao início" onPress={() => router.replace('/')} />
+          <LinkTexto titulo="Voltar ao início" onPress={sair} />
         </>
       )}
     </Tela>

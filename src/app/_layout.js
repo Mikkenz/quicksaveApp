@@ -36,8 +36,6 @@ function Navegacao() {
     <>
       <StatusBar style={escuro ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: cores.fundo } }}>
-        {/* Fora das regras de acesso: abre logado ou não, a partir do e-mail */}
-        <Stack.Screen name="redefinir-senha" />
         <Stack.Protected guard={!logado}>
           <Stack.Screen name="(auth)" />
         </Stack.Protected>
@@ -66,6 +64,9 @@ function Navegacao() {
           <Stack.Screen name="admin/rewind" />
           <Stack.Screen name="conta" />
         </Stack.Protected>
+        {/* Fora das regras de acesso: abre logado ou não, a partir do e-mail.
+            Fica por último porque, quando a tela pedida está bloqueada, o app abre a primeira liberada da lista. */}
+        <Stack.Screen name="redefinir-senha" />
       </Stack>
     </>
   );
