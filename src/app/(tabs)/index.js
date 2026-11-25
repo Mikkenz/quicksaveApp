@@ -4,7 +4,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { Aviso, Botao, Rotulo, Tela, Texto } from '../../components/ui';
 import { CabecalhoAba } from '../../components/Cabecalho';
 import { Capa, Opcoes } from '../../components/jogos';
-import { IconeSino } from '../../components/icons';
+import { IconeBuscar, IconeSino } from '../../components/icons';
 import { CartaoReview, ListaAtividades, Selo } from '../../components/social';
 import { useAuth } from '../../lib/auth';
 import { atualizarContagens, useContagens } from '../../lib/contagens';
@@ -16,6 +16,20 @@ const ABAS = [
   { valor: 'amigos', rotulo: 'Amigos' },
   { valor: 'popular', rotulo: 'Popular' },
 ];
+
+function BotaoBuscar() {
+  const { cores, borda } = useTheme();
+  return (
+    <Pressable
+      role="button"
+      aria-label="Buscar jogos"
+      onPress={() => router.push('/buscar')}
+      style={{ width: ALVO_TOQUE + 4, height: ALVO_TOQUE + 4, borderRadius: 24, borderWidth: borda.largura, borderColor: cores.borda, backgroundColor: cores.superficie, alignItems: 'center', justifyContent: 'center' }}
+    >
+      <IconeBuscar cor={cores.texto} tamanho={22} />
+    </Pressable>
+  );
+}
 
 function BotaoSino() {
   const { cores, borda } = useTheme();
@@ -133,7 +147,15 @@ export default function Inicio() {
 
   return (
     <Tela>
-      <CabecalhoAba titulo="Início" direita={<BotaoSino />}>
+      <CabecalhoAba
+        titulo="Início"
+        direita={
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            <BotaoBuscar />
+            <BotaoSino />
+          </View>
+        }
+      >
         <Opcoes rotulo="O que mostrar" opcoes={ABAS} valor={aba} onChange={setAba} colunas={2} />
       </CabecalhoAba>
       {aba === 'amigos' ? <FeedAmigos /> : <Popular />}

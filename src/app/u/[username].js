@@ -4,6 +4,7 @@ import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Aviso, Tela, Texto, Titulo } from '../../components/ui';
 import { Cabecalho } from '../../components/Cabecalho';
 import { ConteudoPerfil } from '../../components/ConteudoPerfil';
+import { Denunciar } from '../../components/Denunciar';
 import { Avatar, BotaoPequeno, BotaoRelacao } from '../../components/social';
 import { atualizarContagens } from '../../lib/contagens';
 import { bloquear, desfazerAmizade, perfilPublico } from '../../lib/social';
@@ -113,6 +114,9 @@ export default function PerfilPublico() {
           <Texto suave style={{ fontSize: 14 }}>
             Ao bloquear, a amizade é desfeita, a pessoa não consegue mais enviar pedidos e vocês deixam de ver os registros um do outro.
           </Texto>
+          <View style={{ alignSelf: 'flex-start' }}>
+            <Denunciar tipo="profile" alvo={perfil.id} descricao={`o perfil de ${nome}`} />
+          </View>
         </View>
       ) : null}
 

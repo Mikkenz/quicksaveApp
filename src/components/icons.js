@@ -42,6 +42,15 @@ export const IconeTrofeu = (p) => (
 export const IconeComentario = (p) => (
   <Base {...p}><Path d="M4 5h16v11H9l-5 4z" /></Base>
 );
+export const IconeComunidades = (p) => (
+  <Base {...p}><Path d="M3 5h12v8H8l-4 3.5V13H3zM15 9h6v7h-1v3l-3.5-3H11v-3" /></Base>
+);
+export const IconeBandeira = (p) => (
+  <Base {...p}><Path d="M5 21V4M5 4h11l-2 4 2 4H5" /></Base>
+);
+export const IconeOlhoFechado = (p) => (
+  <Base {...p}><Path d="M3 3l18 18M10.6 6.2A9.8 9.8 0 0 1 12 6c5.5 0 9 6 9 6a16 16 0 0 1-2.9 3.6M6.5 7.6C4.3 9.2 3 12 3 12s3.5 6 9 6a8.7 8.7 0 0 0 4.1-1M9.9 10a3 3 0 0 0 4.1 4.1" /></Base>
+);
 export const IconeGrupo = (p) => (
   <Base {...p}><Circle cx="12" cy="7.5" r="3" /><Circle cx="5.5" cy="10" r="2.2" /><Circle cx="18.5" cy="10" r="2.2" /><Path d="M7 20c0-3 2.2-5 5-5s5 2 5 5M2 18.5c0-2 1.4-3.4 3.5-3.4M22 18.5c0-2-1.4-3.4-3.5-3.4" /></Base>
 );

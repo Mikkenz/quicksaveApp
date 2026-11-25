@@ -41,6 +41,13 @@ function Navegacao() {
           <Stack.Screen name="grupo/[id]" />
           <Stack.Screen name="atividade/[id]" />
           <Stack.Screen name="notificacoes" />
+          <Stack.Screen name="buscar" />
+          <Stack.Screen name="comunidade/nova" />
+          <Stack.Screen name="comunidade/[slug]" />
+          <Stack.Screen name="comunidade/gerenciar/[slug]" />
+          <Stack.Screen name="topico/novo" />
+          <Stack.Screen name="topico/[id]" />
+          <Stack.Screen name="denuncias" />
         </Stack.Protected>
       </Stack>
     </>

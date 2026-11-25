@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -6,6 +6,7 @@ import { Botao } from './ui';
 import { Avatar } from './social';
 import { LinksTermos } from './LinksTermos';
 import { useAuth } from '../lib/auth';
+import { resumoDenuncias } from '../lib/comunidades';
 import { ALVO_TOQUE, useTheme } from '../theme';
 
 /** Item grande do menu, com a linha lilás embaixo (igual ao menu do site). */
@@ -34,6 +35,12 @@ export function MenuPerfil({ aberto, aoFechar }) {
   const { perfil, sair } = useAuth();
   const insets = useSafeAreaInsets();
   const [saindo, setSaindo] = useState(false);
+  const [denuncias, setDenuncias] = useState(null);
+
+  // Quem modera alguma comunidade (ou é admin) vê o atalho para as denúncias
+  useEffect(() => {
+    if (aberto) resumoDenuncias().then(setDenuncias);
+  }, [aberto]);
 
   function ir(rota) {
     aoFechar();
@@ -79,6 +86,9 @@ export function MenuPerfil({ aberto, aoFechar }) {
             </View>
 
             <Item titulo="Editar perfil" onPress={() => ir('/editar-perfil')} />
+            {denuncias?.can_review ? (
+              <Item titulo={denuncias.open ? `Denúncias (${denuncias.open})` : 'Denúncias'} onPress={() => ir('/denuncias')} />
+            ) : null}
 
             <View style={{ marginTop: 24, gap: 6 }}>
               <Pressable

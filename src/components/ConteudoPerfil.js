@@ -4,6 +4,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { Aviso, Cartao, Rotulo, Texto } from './ui';
 import { Capa, Nota, Opcoes } from './jogos';
 import { ListaAtividades } from './social';
+import { ConteudoSpoiler } from './Spoiler';
 import { dataCurta, favoritosDe, meusRegistros, rotuloStatus } from '../lib/registros';
 import { feedPessoa } from '../lib/social';
 import { useFeed } from '../lib/useFeed';
@@ -72,7 +73,9 @@ function LinhaRegistro({ r, aba, meu }) {
       <View style={{ flex: 1, gap: 2 }}>
         <Text style={{ fontFamily: fonts.display, fontSize: 16, color: cores.texto }} numberOfLines={2}>{r.games?.name}</Text>
         {aba === 'reviews' ? (
-          <Text style={{ fontFamily: fonts.corpoItalico, fontSize: 15, color: cores.texto }} numberOfLines={3}>“{r.review}”</Text>
+          <ConteudoSpoiler spoiler={r.has_spoilers} aberto={meu}>
+            <Text style={{ fontFamily: fonts.corpoItalico, fontSize: 15, color: cores.texto }} numberOfLines={3}>“{r.review}”</Text>
+          </ConteudoSpoiler>
         ) : (
           <Text style={{ fontFamily: fonts.mono, fontSize: 12, color: cores.textoSuave }}>
             {rotuloStatus(r.status)}{horas}{r.platform ? ` · ${r.platform}` : ''}{meu && r.visibility === 'public' ? ' · Todos' : ''}

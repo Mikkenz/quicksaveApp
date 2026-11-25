@@ -75,9 +75,11 @@ No SQL Editor do app: `update public.profiles set role = 'admin' where username 
 ```
 src/app/          telas (Expo Router)
   (auth)/         boas-vindas, entrar, criar-conta, esqueci-senha
-  (tabs)/         inicio (feed), buscar, registrar, amigos, perfil
+  (tabs)/         inicio (feed), comunidades, registrar, amigos, perfil
+  buscar.js       busca de jogos (lupa no topo do Início)
   jogo/ registro/ páginas do jogo e formulário de registro
   u/ grupo/ atividade/ notificacoes.js   parte social
+  comunidade/ topico/ denuncias.js       comunidades e moderação
   completar-perfil.js
 src/components/   componentes visuais (ui.js, ícones, campos de perfil)
 src/lib/          supabase, login (auth, google), validações, jogos, registros, social

@@ -91,7 +91,8 @@ export const REACOES = [
 ];
 
 export const reagir = (eventId, tipo) => rpc('react_to_event', { p_event: eventId, p_kind: tipo });
-export const comentar = (eventId, texto) => rpc('add_comment', { p_event: eventId, p_body: texto });
+export const comentar = (eventId, texto, spoiler = false) =>
+  rpc('add_comment', { p_event: eventId, p_body: texto, p_spoiler: spoiler });
 export const apagarComentario = (id) => rpc('delete_comment', { p_id: id });
 export const comentarios = (eventId) => lista('event_comments_list', { p_event: eventId });
 
@@ -159,6 +160,12 @@ export function textoNotificacao(n) {
       return `${quem} curtiu sua review${n.game_name ? ` de ${n.game_name}` : ''}.`;
     case 'group_activity':
       return `${quem} ${verboAtividade(n.event_type)} ${n.game_name || 'um jogo'}${n.group_name ? ` · ${n.group_name}` : ''}.`;
+    case 'post_reply':
+      return `${quem} respondeu seu tópico${n.post_title ? ` "${n.post_title}"` : ''}${n.community_name ? ` em ${n.community_name}` : ''}.`;
+    case 'mod_action':
+      return `A moderação${n.community_name ? ` de ${n.community_name}` : ''} removeu um conteúdo seu${n.post_title ? ` no tópico "${n.post_title}"` : ''}.`;
+    case 'report':
+      return n.community_name ? `Nova denúncia para analisar em ${n.community_name}.` : 'Nova denúncia para analisar.';
     default:
       return 'Novidade no Quicksave.';
   }
@@ -166,6 +173,8 @@ export function textoNotificacao(n) {
 
 /** Para onde levar quem toca na notificação. */
 export function destinoNotificacao(n) {
+  if (n.type === 'report') return '/denuncias';
+  if (n.post_id) return `/topico/${n.post_id}`;
   if (n.event_id) return `/atividade/${n.event_id}`;
   if (n.type === 'review_like' && n.game_id) return `/jogo/${n.game_id}`;
   if (n.type === 'group_invite' && n.group_id) return `/grupo/${n.group_id}`;
