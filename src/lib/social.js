@@ -164,6 +164,8 @@ export function textoNotificacao(n) {
       return `${quem} respondeu seu tópico${n.post_title ? ` "${n.post_title}"` : ''}${n.community_name ? ` em ${n.community_name}` : ''}.`;
     case 'mod_action':
       return `A moderação${n.community_name ? ` de ${n.community_name}` : ''} removeu um conteúdo seu${n.post_title ? ` no tópico "${n.post_title}"` : ''}.`;
+    case 'rewind':
+      return 'Seu Rewind chegou! Toque para ver sua retrospectiva.';
     case 'report':
       return n.community_name ? `Nova denúncia para analisar em ${n.community_name}.` : 'Nova denúncia para analisar.';
     default:
@@ -174,6 +176,7 @@ export function textoNotificacao(n) {
 /** Para onde levar quem toca na notificação. */
 export function destinoNotificacao(n) {
   if (n.type === 'report') return '/denuncias';
+  if (n.type === 'rewind') return '/rewinds';
   if (n.post_id) return `/topico/${n.post_id}`;
   if (n.event_id) return `/atividade/${n.event_id}`;
   if (n.type === 'review_like' && n.game_id) return `/jogo/${n.game_id}`;
