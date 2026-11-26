@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import * as Linking from 'expo-linking';
-import { Stack } from 'expo-router';
+import { Stack, router, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
@@ -18,6 +18,15 @@ function Navegacao() {
   const { carregando, logado, perfilCompleto } = useAuth();
   const { cores, escuro } = useTheme();
 
+  const caminho = usePathname();
+  // A tela de senha nova só fica liberada quando o app abre pelo link de "Esqueci a senha".
+  // Se ficasse sempre liberada, o app poderia cair nela quando a tela pedida está bloqueada.
+  const [recuperando, setRecuperando] = useState(
+    () => Platform.OS === 'web' && typeof window !== 'undefined' && window.location.pathname.startsWith('/redefinir-senha')
+  );
+  const [abrirSenha, setAbrirSenha] = useState(false);
+  const passouPelaSenha = useRef(false);
+
   useEffect(() => {
     if (!carregando) SplashScreen.hideAsync();
   }, [carregando]);
@@ -25,10 +34,34 @@ function Navegacao() {
   // Link de "Esqueci a senha" no celular: cria a sessão a partir do link (na web, o Supabase já faz isso)
   useEffect(() => {
     if (Platform.OS === 'web') return undefined;
-    Linking.getInitialURL().then(tratarLinkDeRecuperacao);
-    const sub = Linking.addEventListener('url', ({ url }) => tratarLinkDeRecuperacao(url));
+    const tratar = async (url) => {
+      if (await tratarLinkDeRecuperacao(url)) {
+        setRecuperando(true);
+        setAbrirSenha(true);
+      }
+    };
+    Linking.getInitialURL().then(tratar);
+    const sub = Linking.addEventListener('url', ({ url }) => tratar(url));
     return () => sub.remove();
   }, []);
+
+  // Abre a tela de senha nova depois que o perfil carregou e ela já está liberada
+  useEffect(() => {
+    if (abrirSenha && recuperando && !carregando) {
+      setAbrirSenha(false);
+      router.replace('/redefinir-senha');
+    }
+  }, [abrirSenha, recuperando, carregando]);
+
+  // Saiu da tela de senha nova: bloqueia de novo
+  useEffect(() => {
+    if (!recuperando) return;
+    if (caminho === '/redefinir-senha') passouPelaSenha.current = true;
+    else if (passouPelaSenha.current) {
+      passouPelaSenha.current = false;
+      setRecuperando(false);
+    }
+  }, [caminho, recuperando]);
 
   if (carregando) return null;
 
@@ -64,9 +97,10 @@ function Navegacao() {
           <Stack.Screen name="admin/rewind" />
           <Stack.Screen name="conta" />
         </Stack.Protected>
-        {/* Fora das regras de acesso: abre logado ou não, a partir do e-mail.
-            Fica por último porque, quando a tela pedida está bloqueada, o app abre a primeira liberada da lista. */}
-        <Stack.Screen name="redefinir-senha" />
+        {/* Aberta pelo link do e-mail, logado ou não */}
+        <Stack.Protected guard={recuperando}>
+          <Stack.Screen name="redefinir-senha" />
+        </Stack.Protected>
       </Stack>
     </>
   );

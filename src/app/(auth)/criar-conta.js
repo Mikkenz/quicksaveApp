@@ -79,7 +79,7 @@ export default function CriarConta() {
 
   if (enviado) {
     return (
-      <Tela>
+      <Tela rodape>
         <Cabecalho titulo="Confirme seu e-mail" />
         <Texto>
           Enviamos um link para {email.trim()}. Abra o e-mail, toque no link e depois volte aqui para entrar.
@@ -89,7 +89,7 @@ export default function CriarConta() {
   }
 
   return (
-    <Tela>
+    <Tela rodape>
       <Cabecalho titulo="Criar conta" />
       <Campo rotulo="Nome" value={nome} onChangeText={setNome} autoComplete="name" maxLength={50} erro={erros.nome} />
       <CampoUsuario valor={usuario} onChange={setUsuario} estado={disponibilidade} />

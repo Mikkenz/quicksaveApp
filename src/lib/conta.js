@@ -83,5 +83,6 @@ export async function tratarLinkDeRecuperacao(url) {
   if (!acesso || !renovacao) return false;
   const { error } = await supabase.auth.setSession({ access_token: acesso, refresh_token: renovacao });
   if (error) console.warn('link de recuperação:', error.message);
-  return !error;
+  // true só para o link de "Esqueci a senha": é ele que libera a tela de senha nova
+  return !error && params.get('type') === 'recovery';
 }

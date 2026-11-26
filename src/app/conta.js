@@ -38,7 +38,7 @@ export default function Conta() {
   }
 
   return (
-    <Tela>
+    <Tela rodape>
       <Cabecalho titulo="Minha conta" />
       <Texto suave style={{ fontSize: 15 }}>
         @{perfil?.username} · {sessao?.user?.email}
