@@ -30,7 +30,7 @@ export default function EditarPerfil() {
   }
 
   return (
-    <Tela>
+    <Tela rodape>
       <Cabecalho titulo="Editar perfil" />
       <Texto suave style={{ fontSize: 15 }}>O @{perfil?.username} não pode ser trocado por aqui.</Texto>
       <Campo rotulo="Nome" value={nome} onChangeText={setNome} maxLength={50} />

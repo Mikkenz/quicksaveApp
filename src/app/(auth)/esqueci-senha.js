@@ -27,7 +27,7 @@ export default function EsqueciSenha() {
   }
 
   return (
-    <Tela>
+    <Tela rodape>
       <Cabecalho titulo="Esqueci a senha" />
       <Texto>Digite seu e-mail e enviaremos um link para criar uma senha nova.</Texto>
       <Campo rotulo="E-mail" value={email} onChangeText={setEmail} autoCapitalize="none" autoComplete="email" keyboardType="email-address" />

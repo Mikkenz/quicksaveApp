@@ -76,7 +76,7 @@ export default function CompletarPerfil() {
   }
 
   return (
-    <Tela>
+    <Tela rodape>
       <View style={{ height: 24 }} />
       <Titulo>{soTermos ? 'Atualizamos os termos' : primeiroNome ? `Falta pouco, ${primeiroNome}` : 'Falta pouco'}</Titulo>
       <Texto>

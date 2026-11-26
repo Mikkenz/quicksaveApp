@@ -30,7 +30,7 @@ export default function Entrar() {
   }
 
   return (
-    <Tela>
+    <Tela rodape>
       <Cabecalho titulo="Entrar" />
       <Campo rotulo="E-mail" value={email} onChangeText={setEmail} autoCapitalize="none" autoComplete="email" keyboardType="email-address" textContentType="emailAddress" />
       <Campo rotulo="Senha" value={senha} onChangeText={setSenha} secureTextEntry autoComplete="current-password" textContentType="password" onSubmitEditing={entrar} />

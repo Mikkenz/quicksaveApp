@@ -4,20 +4,28 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ALVO_TOQUE, sombra, useTheme } from '../theme';
 
 /** Tela com fundo creme, área segura e rolagem opcional. */
-export function Tela({ children, rolar = true, style, contentStyle }) {
+/**
+ * rodape: telas sem a barra de abas. Reserva o espaço da barra de navegação do celular
+ * para os últimos botões não ficarem atrás dela.
+ */
+export function Tela({ children, rolar = true, rodape = false, style, contentStyle }) {
   const { cores } = useTheme();
+  const extra = rodape ? styles.conteudoRodape : null;
   const conteudo = rolar ? (
     <ScrollView
-      contentContainerStyle={[styles.conteudo, contentStyle]}
+      contentContainerStyle={[styles.conteudo, extra, contentStyle]}
       keyboardShouldPersistTaps="handled"
     >
       {children}
     </ScrollView>
   ) : (
-    <View style={[styles.conteudo, { flex: 1 }, contentStyle]}>{children}</View>
+    <View style={[styles.conteudo, extra, { flex: 1 }, contentStyle]}>{children}</View>
   );
   return (
-    <SafeAreaView style={[{ flex: 1, backgroundColor: cores.fundo }, style]} edges={['top', 'left', 'right']}>
+    <SafeAreaView
+      style={[{ flex: 1, backgroundColor: cores.fundo }, style]}
+      edges={rodape ? ['top', 'left', 'right', 'bottom'] : ['top', 'left', 'right']}
+    >
       {conteudo}
     </SafeAreaView>
   );
@@ -199,6 +207,7 @@ export function Cartao({ children, style }) {
 
 const styles = StyleSheet.create({
   conteudo: { padding: 24, gap: 16, flexGrow: 1 },
+  conteudoRodape: { paddingBottom: 40 },
   botao: { minHeight: 52, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16 },
   botaoLinha: { flexDirection: 'row', alignItems: 'center', gap: 10 },
 });

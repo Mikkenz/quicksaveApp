@@ -54,7 +54,7 @@ export default function RedefinirSenha() {
   }
 
   return (
-    <Tela>
+    <Tela rodape>
       <View style={{ height: 24 }} />
       <Titulo>Senha nova</Titulo>
       {temSessao === false ? (
