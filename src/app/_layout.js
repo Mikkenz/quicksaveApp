@@ -13,6 +13,8 @@ import { tratarLinkDeRecuperacao } from '../lib/conta';
 import { ThemeProvider, useTheme } from '../theme';
 
 SplashScreen.preventAutoHideAsync();
+// A abertura some com um fade curto, em vez de um corte seco
+SplashScreen.setOptions({ fade: true, duration: 300 });
 
 function Navegacao() {
   const { carregando, logado, perfilCompleto } = useAuth();
